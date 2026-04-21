@@ -8,6 +8,7 @@ public class GameBoard {
 
     public GameBoard(Difficulty diff) {
         this.diff = diff;
+        board = new ArrayList<>();
         createBoard();
     }
 
@@ -20,7 +21,8 @@ public class GameBoard {
 
             for(int e = 0; e < 2; e++){
 
-                cards.add(new Card(i, IMAGEEEEEE));
+                cards.add(new Card(i, null));
+                //TODO: obrazky
             }
 
         }
@@ -64,7 +66,7 @@ public class GameBoard {
             for (Card cardd : rows) {
 
                 if (cardd.equals(card)) {
-                    cardd = null;
+                    rows.remove(cardd);
                 }
             }
 

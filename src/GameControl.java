@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class GameControl {
 
+    private static int playerCounter;
     private GameBoard board;
     private boolean end;
     private int attempts;
@@ -10,6 +11,14 @@ public class GameControl {
         this.attempts = 0;
         this.end = false;
         this.board = board;
+
+        //TODO: udelej nacitani hracu
+        this.playerCounter = 0;
+
+    }
+
+    public static int getPlayerCounter() {
+        return playerCounter;
     }
 
     public boolean match(Card card, Card card2){
@@ -41,8 +50,14 @@ public class GameControl {
         return true;
     }
 
-    public void end(){
-        ....
+    public String getResoult(){
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Počet pokusů: ").append(attempts).append("\n");
+        sb.append("Obtížnost: ").append(board.getDiff()).append("\n");
+
+        return sb.toString();
     }
 
     public void attemptMatch(Card card, Card card2){
@@ -57,7 +72,9 @@ public class GameControl {
             board.setCardNull(card2);
 
             if(checkEnd()){
-                enddddddd
+                end = true;
+                System.out.println(getResoult());
+
             }
         }
 
