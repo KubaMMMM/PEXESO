@@ -1,6 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
-import java.io.FileNotFoundException;
 
 public class TitleScreen extends JFrame {
     private JFrame frame;
@@ -9,85 +9,93 @@ public class TitleScreen extends JFrame {
     public TitleScreen() {
         this.frame = new JFrame("Pexeso");
         init();
-
-        //TODO: diff
-//        gm = new GameControl(new GameBoard(Difficulty.))
     }
 
     private void init() {
-        frame.setSize(800, 600);
-        frame.setPreferredSize(new Dimension(800,600));
+
+        // ===================== NASTAVENÍ OKNA =====================
+        frame.setSize(400, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);          // vycentruje okno na obrazovce
+        frame.setResizable(false);                  // okno nejde měnit velikost
+        frame.setLayout(new BorderLayout());        // okno je rozděleno na NORTH, CENTER, SOUTH
         frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setLayout(new BorderLayout());
 
-
-        //ikona okna
+        // ===================== IKONA OKNA =====================
         try {
-            ImageIcon icon = new ImageIcon(
-                    getClass().getResource("/resources/icon.png")
-
-            );
+            ImageIcon icon = new ImageIcon(getClass().getResource("/resources/icon.png"));
             frame.setIconImage(icon.getImage());
-
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("icon obrazek nenalezen");
         }
 
-
-
-        //uvodni text
+        // ===================== NADPIS (NORTH) =====================
         JLabel title = new JLabel("PEXESO", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 40));
+        title.setFont(new Font("Arial", Font.BOLD, 18));
+        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 1, 0)); // mezera: 10px nahoře, 5px dole
         frame.add(title, BorderLayout.NORTH);
 
+        // ===================== TLAČÍTKA OBTÍŽNOSTÍ =====================
+        JButton easy   = new JButton("LEHKA");
+        JButton medium = new JButton("STREDNI");
+        JButton hard   = new JButton("TEZKA");
 
-        //obtiznosti
-        JPanel diffs = new JPanel();
-        diffs.setLayout((new BoxLayout(diffs, BoxLayout.X_AXIS)));
-        diffs.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
+        easy.setFocusPainted(false);    // schová modrý rámeček při kliknutí (výchozí chování Javy)
+        medium.setFocusPainted(false);
+        hard.setFocusPainted(false);
 
-        Dimension size = new Dimension(200, 300);
+        // Border = rámeček okolo tlačítka
+        Border defaultBorder  = easy.getBorder();                        // uložíme výchozí border PŘED změnami
+        Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 2); // modrá čára, 2px tlustá
 
-        JButton easy = new JButton("Easy 4x4");
-        easy.setPreferredSize(size);
-        easy.setFocusPainted(false);  //smazani ramecku okolo textu
-        easy.setAlignmentX(CENTER_ALIGNMENT);
+        // Po kliknutí na obtížnost: vybrané tlačítko dostane modrý border, ostatní se resetují
+        easy.addActionListener(e -> {
+            easy.setBorder(selectedBorder);
+            medium.setBorder(defaultBorder);
+            hard.setBorder(defaultBorder);
+        });
+        medium.addActionListener(e -> {
+            easy.setBorder(defaultBorder);
+            medium.setBorder(selectedBorder);
+            hard.setBorder(defaultBorder);
+        });
+        hard.addActionListener(e -> {
+            easy.setBorder(defaultBorder);
+            medium.setBorder(defaultBorder);
+            hard.setBorder(selectedBorder);
+        });
 
-
-        JButton medium = new JButton("Medium 4x5");
-        medium.setPreferredSize(size);
-        medium.setFocusPainted(false);  //smazani ramecku okolo textu
-        medium.setAlignmentX(CENTER_ALIGNMENT);
-
-        JButton hard = new JButton("Hard 4x6");
-        hard.setPreferredSize(size);
-        hard.setFocusPainted(false);  //smazani ramecku okolo textu
-        hard.setAlignmentX(CENTER_ALIGNMENT);
-
-
+        // FlowLayout řadí tlačítka vedle sebe, 5px mezera mezi nimi
+        JPanel diffs = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         diffs.add(easy);
-        diffs.add(Box.createHorizontalStrut(15));   //mezery
         diffs.add(medium);
-        diffs.add(Box.createHorizontalStrut(15));
         diffs.add(hard);
-        diffs.setAlignmentX(Component.CENTER_ALIGNMENT);
+        diffs.setAlignmentX(Component.CENTER_ALIGNMENT); // vycentrování v BoxLayout
 
-        //TODO: udelat spravne vedle sebe tlacitka
-
+        // ===================== TLAČÍTKO START =====================
         JButton startButton = new JButton("START");
+        startButton.setFocusPainted(false);
         startButton.setAlignmentX(CENTER_ALIGNMENT);
+        startButton.setPreferredSize(new Dimension(170, 20)); // požadovaná velikost
+        startButton.setMaximumSize(new Dimension(170, 20));   // BoxLayout by ho jinak natáhl na celou šířku
 
-        diffs.add(startButton);
-        frame.add(diffs, BorderLayout.CENTER);
+        // ===================== STŘED OKNA (CENTER) =====================
+        // inner drží obtížnosti a START těsně u sebe (BoxLayout = řadí pod sebe)
+        JPanel inner = new JPanel();
+        inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
+        inner.add(diffs);
+        inner.add(Box.createVerticalStrut(20)); // 5px mezera mezi obtížnostmi a STARTem
+        inner.add(startButton);
 
-        //info dole
-        JLabel info = new JLabel("Hráč číslo: "+GameControl.getPlayerCounter(), SwingConstants.CENTER);
-        frame.add(info,BorderLayout.SOUTH);
+        // center vycentruje inner doprostřed okna
+        // GridBagLayout bez parametrů automaticky vycentruje svůj obsah
+        JPanel center = new JPanel(new GridBagLayout());
+        center.add(inner);
+        frame.add(center, BorderLayout.CENTER);
 
-
+        // ===================== INFO DOLE (SOUTH) =====================
+        JLabel info = new JLabel("počet hráčů před vámi: " + GameControl.getPlayerCounter(), SwingConstants.CENTER);
+        info.setBorder(BorderFactory.createEmptyBorder(0, 0, 8, 0)); // 8px mezera dole
+        frame.add(info, BorderLayout.SOUTH);
     }
-
 }
