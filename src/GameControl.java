@@ -83,5 +83,31 @@ public class GameControl {
         attempts++;
     }
 
+    public static void setPlayerCounter(int playerCounter) {
+        GameControl.playerCounter = playerCounter;
+    }
 
+    public GameBoard getBoard() {
+        return board;
+    }
+
+    public void setBoard(GameBoard board) {
+        this.board = board;
+    }
+
+    public boolean isEnd() {
+        return end;
+    }
+
+    public void setEnd(boolean end) {
+        this.end = end;
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public void setAttempts(int attempts) {
+        this.attempts = attempts;
+    }
 }

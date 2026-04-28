@@ -4,12 +4,14 @@ import java.awt.*;
 
 public class TitleScreen extends JFrame {
     private JFrame frame;
-    private GameControl gm;
+    private GameControl gc;
 
-    public TitleScreen() {
+    public TitleScreen(GameControl gc) {
+        this.gc = gc;
         this.frame = new JFrame("Pexeso");
         init();
     }
+
 
     private void init() {
 
@@ -36,37 +38,55 @@ public class TitleScreen extends JFrame {
         frame.add(title, BorderLayout.NORTH);
 
         // ===================== TLAČÍTKA OBTÍŽNOSTÍ =====================
-        JButton easy   = new JButton("LEHKA");
+        JButton easy = new JButton("LEHKA");
         JButton medium = new JButton("STREDNI");
-        JButton hard   = new JButton("TEZKA");
+        JButton hard = new JButton("TEZKA");
+
+        easy.setPreferredSize(new Dimension(70, 30));
+        medium.setPreferredSize(new Dimension(70, 30));
+        hard.setPreferredSize(new Dimension(70, 30));
+
 
         easy.setFocusPainted(false);    // schová modrý rámeček při kliknutí (výchozí chování Javy)
         medium.setFocusPainted(false);
         hard.setFocusPainted(false);
 
         // Border = rámeček okolo tlačítka
-        Border defaultBorder  = easy.getBorder();                        // uložíme výchozí border PŘED změnami
-        Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 2); // modrá čára, 2px tlustá
+        Border defaultBorder = BorderFactory.createLineBorder(Color.GRAY, 2); // 2px šedá
+        Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 2); // 2px modrá
+
+
+        easy.setBorder(selectedBorder);
+        medium.setBorder(defaultBorder);
+        hard.setBorder(defaultBorder);
 
         // Po kliknutí na obtížnost: vybrané tlačítko dostane modrý border, ostatní se resetují
         easy.addActionListener(e -> {
             easy.setBorder(selectedBorder);
             medium.setBorder(defaultBorder);
             hard.setBorder(defaultBorder);
+
+            gc.getBoard().setDiff(Difficulty.EASY);
         });
         medium.addActionListener(e -> {
             easy.setBorder(defaultBorder);
             medium.setBorder(selectedBorder);
             hard.setBorder(defaultBorder);
+
+            gc.getBoard().setDiff(Difficulty.MEDIUM);
+
+
         });
         hard.addActionListener(e -> {
             easy.setBorder(defaultBorder);
             medium.setBorder(defaultBorder);
             hard.setBorder(selectedBorder);
+
+            gc.getBoard().setDiff(Difficulty.HARD);
         });
 
         // FlowLayout řadí tlačítka vedle sebe, 5px mezera mezi nimi
-        JPanel diffs = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        JPanel diffs = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
         diffs.add(easy);
         diffs.add(medium);
         diffs.add(hard);
@@ -78,6 +98,12 @@ public class TitleScreen extends JFrame {
         startButton.setAlignmentX(CENTER_ALIGNMENT);
         startButton.setPreferredSize(new Dimension(170, 20)); // požadovaná velikost
         startButton.setMaximumSize(new Dimension(170, 20));   // BoxLayout by ho jinak natáhl na celou šířku
+
+        startButton.addActionListener(e -> {
+            GameWindow gw = new GameWindow(gc);
+            frame.setVisible(false);
+
+        });
 
         // ===================== STŘED OKNA (CENTER) =====================
         // inner drží obtížnosti a START těsně u sebe (BoxLayout = řadí pod sebe)
