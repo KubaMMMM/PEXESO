@@ -15,19 +15,9 @@ public class Main {
             e.printStackTrace();
         }
 
-        SwingUtilities.invokeLater(() -> {
-            // Nejdřív vytvoříš kontroler
-            GameControl gc = new GameControl(new GameBoard(Difficulty.EASY));
-
-            // Pak ho předáš do TitleScreen
-            TitleScreen ts = new TitleScreen(gc);
-            // ts.setVisible(true); // Pokud ho nemáš visible v konstruktoru
-        });
+        SwingUtilities.invokeLater(() -> new Game());
     }
     //--------------------------------------------------------------
-
-    Game g = new Game();
-
 
 
     }

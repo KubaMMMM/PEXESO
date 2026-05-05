@@ -21,8 +21,7 @@ public class GameBoard {
 
             for(int e = 0; e < 2; e++){
 
-                cards.add(new Card(i, null));
-                //TODO: obrazky
+                cards.add(new Card(i, CardImages.getImage(i)));
             }
 
         }
@@ -60,18 +59,17 @@ public class GameBoard {
     }
 
     public void setCardNull(Card card) {
-
         for (ArrayList<Card> rows : board) {
-
             for (Card cardd : rows) {
-
-                if (cardd.equals(card)) {
-                    rows.remove(cardd);
+                if (cardd != null && cardd.equals(card)) {
+                    cardd.setMatched(true);
+                    return;
                 }
             }
-
         }
     }
-
-
 }
+
+
+
+

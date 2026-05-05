@@ -51,6 +51,10 @@ public class TitleScreen extends JFrame {
         medium.setFocusPainted(false);
         hard.setFocusPainted(false);
 
+        easy.setCursor(new Cursor(Cursor.HAND_CURSOR));  // kurzor se změní na ruku při najetí
+        medium.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        hard.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         // Border = rámeček okolo tlačítka
         Border defaultBorder = BorderFactory.createLineBorder(Color.GRAY, 2); // 2px šedá
         Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 2); // 2px modrá
@@ -66,14 +70,14 @@ public class TitleScreen extends JFrame {
             medium.setBorder(defaultBorder);
             hard.setBorder(defaultBorder);
 
-            gc.getBoard().setDiff(Difficulty.EASY);
+            gc.setBoard(new GameBoard(Difficulty.EASY));
         });
         medium.addActionListener(e -> {
             easy.setBorder(defaultBorder);
             medium.setBorder(selectedBorder);
             hard.setBorder(defaultBorder);
 
-            gc.getBoard().setDiff(Difficulty.MEDIUM);
+            gc.setBoard(new GameBoard(Difficulty.MEDIUM));
 
 
         });
@@ -82,7 +86,7 @@ public class TitleScreen extends JFrame {
             medium.setBorder(defaultBorder);
             hard.setBorder(selectedBorder);
 
-            gc.getBoard().setDiff(Difficulty.HARD);
+            gc.setBoard(new GameBoard(Difficulty.HARD));
         });
 
         // FlowLayout řadí tlačítka vedle sebe, 5px mezera mezi nimi
@@ -94,10 +98,12 @@ public class TitleScreen extends JFrame {
 
         // ===================== TLAČÍTKO START =====================
         JButton startButton = new JButton("START");
+        startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         startButton.setFocusPainted(false);
         startButton.setAlignmentX(CENTER_ALIGNMENT);
         startButton.setPreferredSize(new Dimension(170, 20)); // požadovaná velikost
         startButton.setMaximumSize(new Dimension(170, 20));   // BoxLayout by ho jinak natáhl na celou šířku
+
 
         startButton.addActionListener(e -> {
             GameWindow gw = new GameWindow(gc);
