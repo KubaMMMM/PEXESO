@@ -10,6 +10,9 @@ public class TitleScreen extends JFrame {
         this.gc = gc;
         this.frame = new JFrame("Pexeso");
         init();
+
+//        frame.setVisible(false);
+//        EndScreen end = new EndScreen(gc);
     }
 
 
@@ -34,7 +37,7 @@ public class TitleScreen extends JFrame {
         // ===================== NADPIS (NORTH) =====================
         JLabel title = new JLabel("PEXESO", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 18));
-        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 1, 0)); // mezera: 10px nahoře, 5px dole
+        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 1, 0)); // mezera: 10px nahoře, 1px dole
         frame.add(title, BorderLayout.NORTH);
 
         // ===================== TLAČÍTKA OBTÍŽNOSTÍ =====================

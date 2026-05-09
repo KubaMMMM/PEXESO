@@ -72,6 +72,7 @@ public class GameWindow extends JFrame {
             for (int c = 0; c < cols; c++) {
                 JButton btn = createCardButton(r, c);
                 buttons[r][c] = btn;
+                btn.setFocusable(false);
                 gridPanel.add(btn);
             }
         }
@@ -100,7 +101,6 @@ public class GameWindow extends JFrame {
     private JButton createCardButton(int row, int col) {
         JButton btn = new JButton();
         btn.setBackground(COLOR_BACK);
-        btn.setOpaque(true);
         btn.setBorderPainted(true);
         btn.setFocusPainted(false);
         btn.setFont(new Font("Arial", Font.BOLD, 22));
@@ -117,7 +117,6 @@ public class GameWindow extends JFrame {
 
         if (waiting) return;
 
-        // OPRAVA: přímý přístup přes pevné indexy, bez kontroly velikosti (board se nemění)
         Card card = gc.getBoard().getBoard().get(row).get(col);
         if (card.isFlipped() || card.isMatched()) return;
 
@@ -145,7 +144,8 @@ public class GameWindow extends JFrame {
                 waiting = false;
 
                 if (gc.isEnd()) {
-                    showEndScreen();
+                    frame.setVisible(false);
+                    EndScreen end = new EndScreen(gc);
                 }
             } else {
                 updateCounter();
@@ -191,7 +191,7 @@ public class GameWindow extends JFrame {
             btn.setIcon(new ImageIcon(scaled));
             btn.setText("");
         } else {
-            // Fallback – zobraz číslo ID
+//             Fallback – zobraz číslo ID
             btn.setIcon(null);
             btn.setText(String.valueOf(card.getID() + 1)); // +1 aby čísla začínala od 1
         }

@@ -1,3 +1,8 @@
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +17,20 @@ public class GameBoard {
         createBoard();
     }
 
+    public Image getImage(String filePath) {
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                throw new IllegalArgumentException("Obrázek nenalezen: " + file.getAbsolutePath());
+            }
+            return ImageIO.read(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Chyba při načítání: " + filePath, e);
+        }
+    }
+
+
+
     public void createBoard(){
 
         int count = diff.getCardCount();
@@ -21,7 +40,8 @@ public class GameBoard {
 
             for(int e = 0; e < 2; e++){
 
-                cards.add(new Card(i, CardImages.getImage(i)));
+                cards.add(new Card(i, getImage("src\\images\\image (" + (i + 1) + ").png"
+                )));
             }
 
         }
