@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class GameControl {
@@ -10,6 +11,7 @@ public class GameControl {
     private GameBoard board;
     private boolean end;
     private int attempts;
+    private ArrayList<Score> scores;
 
     public GameControl(GameBoard board) {
         this.attempts = 0;
@@ -18,6 +20,8 @@ public class GameControl {
         loadPlayerCounter();
         playerCounter++;
         savePlayerCounter();
+        scores = new ArrayList<>();
+
 
 
     }
@@ -42,6 +46,50 @@ public class GameControl {
             playerCounter = 0;
         }
     }
+
+
+    //==========================NACTENI SKORE====================
+    public void loadScores() {
+
+        File file = new File("resources/skore.dat");
+
+        if (!file.exists()) {
+            return;
+        }
+
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(new FileInputStream(file))) {
+
+            scores = (ArrayList<Score>) ois.readObject();
+
+        } catch (Exception e) {
+            System.out.println("Chyba pri nacitani score");
+        }
+    }
+
+    //==========================ULOZENI SKORE====================
+    public void saveScores() {
+
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(
+                             new FileOutputStream("resources/skore.dat"))) {
+
+            oos.writeObject(scores);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addScore(String name) {
+
+        scores.add(new Score(name, attempts));
+
+        Collections.sort(scores);
+
+        saveScores();
+    }
+
 
     // ===================== ULOŽENÍ DO SOUBORU =====================
     public static void savePlayerCounter() {
@@ -138,6 +186,14 @@ public class GameControl {
 
     public boolean isEnd() {
         return end;
+    }
+
+    public ArrayList<Score> getScores() {
+        return scores;
+    }
+
+    public void setScores(ArrayList<Score> scores) {
+        this.scores = scores;
     }
 
     public void setEnd(boolean end) {

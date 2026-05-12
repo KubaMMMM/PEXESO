@@ -146,6 +146,7 @@ public class GameWindow extends JFrame {
                 if (gc.isEnd()) {
                     frame.setVisible(false);
                     EndScreen end = new EndScreen(gc);
+                    gc.addScore("Vsetat");
                 }
             } else {
                 updateCounter();
