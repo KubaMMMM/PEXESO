@@ -2,10 +2,10 @@ import java.awt.*;
 
 public class Card {
 
-    private int ID;
+    private int ID;             // ID páru – dvě karty se stejným ID tvoří pár
     private Image image;
-    private boolean isFlipped;
-    private boolean isMatched;
+    private boolean isFlipped;  // karta je momentálně otočená lícem nahoru
+    private boolean isMatched;  // karta byla úspěšně spárována
 
     public Card(int ID, Image image) {
         this.ID = ID;

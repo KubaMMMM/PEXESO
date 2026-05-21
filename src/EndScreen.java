@@ -1,18 +1,18 @@
-import javax.swing.*;
-import javax.swing.border.Border;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.*;
 
 public class EndScreen extends JFrame {
+
     private JFrame frame;
     private GameControl gc;
     private JScrollPane scrollPane;
     private JTextField textField;
     private DefaultListModel<String> model;
     private JList<String> list;
+    private String playerName = null;
 
     public EndScreen(GameControl gc) {
         this.gc = gc;
@@ -23,7 +23,6 @@ public class EndScreen extends JFrame {
         textField = new JTextField();
         init();
     }
-
 
     private void init() {
 
@@ -37,7 +36,7 @@ public class EndScreen extends JFrame {
 
         // ===================== IKONA OKNA =====================
         try {
-            ImageIcon icon = new ImageIcon(getClass().getResource("/resources/icon.png"));
+            ImageIcon icon = new ImageIcon(getClass().getResource("/icon.png"));
             frame.setIconImage(icon.getImage());
         } catch (Exception e) {
             System.out.println("icon obrazek nenalezen");
@@ -52,27 +51,24 @@ public class EndScreen extends JFrame {
         northPanel.add(title);
         frame.add(northPanel, BorderLayout.NORTH);
 
-
         //==========================POCET POKUSU==========================
-
         JPanel attempts = new JPanel();
         attempts.setLayout(new BoxLayout(attempts, BoxLayout.Y_AXIS));
 
-        JLabel attemptsText = new JLabel("Počet tahů:" , SwingConstants.LEFT);
+        JLabel attemptsText = new JLabel("Počet tahů:", SwingConstants.LEFT);
         attemptsText.setFont(new Font("Arial", Font.BOLD, 20));
         attemptsText.setBorder(BorderFactory.createEmptyBorder(40, 20, 0, 0)); // mezera: 10px nahoře, 5px dole
         attempts.add(attemptsText);
 
-        JLabel attemptsNumber = new JLabel("  "+gc.getAttempts() , SwingConstants.CENTER);
+        JLabel attemptsNumber = new JLabel("    " + gc.getAttempts(), SwingConstants.CENTER);
         attemptsNumber.setFont(new Font("Comic Sans", Font.BOLD, 70));
         attemptsNumber.setBorder(BorderFactory.createEmptyBorder(2, 10, 1, 0)); // mezera: 10px nahoře, 5px dole
         attempts.add(attemptsNumber);
 
-        JLabel diff = new JLabel("Obtížnost: "+gc.getBoard().getDiff().name());
+        JLabel diff = new JLabel("Obtížnost: " + gc.getBoard().getDiff().name());
         diff.setFont(new Font("Arial", Font.BOLD, 20));
-        diff.setBorder(BorderFactory.createEmptyBorder(40,20,5,5));
+        diff.setBorder(BorderFactory.createEmptyBorder(40, 20, 5, 5));
         attempts.add(diff);
-
 
         frame.add(attempts, BorderLayout.WEST);
 
@@ -80,57 +76,80 @@ public class EndScreen extends JFrame {
         JPanel table = new JPanel();
         table.setLayout(new BorderLayout());
 
-
-
         table.add(scrollPane, BorderLayout.CENTER);
 
-        JButton button = new JButton("Pridej");
+        JButton button = new JButton("Přidat");
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(button, BorderLayout.EAST);
 
-        textField.setText("Tady piste");
-        panel.add(textField, BorderLayout.CENTER);
+        textField.setForeground(Color.GRAY);
+        textField.setText("Zadejte jméno");
 
-        button.addActionListener(e -> {
-            String text = textField.getText();
-            if(!text.isEmpty()){
-                model.addElement(text);
+        textField.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (textField.getText().equals("Zadejte jméno")) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
             }
 
-            textField.setText("");
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText("Zadejte jméno");
+                }
+            }
         });
 
-        panel.setBorder(BorderFactory.createEmptyBorder(2,0,3,0));
+        panel.add(textField, BorderLayout.CENTER);
+
+        // ===================== ZADÁNÍ JMÉNA =====================
+        // text field s placeholderem a tlačítko pro přidání hráče
+        button.addActionListener(e -> {
+            String text = textField.getText();
+
+            if (playerName == null && !text.isEmpty() && !text.equals("Zadejte jméno")) {
+                playerName = text;
+                model.addElement(text);
+                textField.disable();
+            }
+
+            textField.setText("Jméno zadáno");
+        });
+
+        panel.setBorder(BorderFactory.createEmptyBorder(2, 0, 3, 0));
         table.add(panel, BorderLayout.NORTH);
 
-
+        // ===================== PŘIDÁNÍ HRÁČE =====================
+        // přidání jména do seznamu pomocí tlačítka nebo ENTERU
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String text = textField.getText();
-                    if(!text.isEmpty()){
+                    if (playerName == null && !text.isEmpty() && !text.equals("Zadejte jméno")) {
+                        playerName = text;
                         model.addElement(text);
+                        textField.disable();
                     }
-                    textField.setText("");
+
+                    textField.setText("Jméno zadáno");
                 }
             }
         });
 
-
-
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() % 2 == 0){
-                    model.remove(list.getSelectedIndex());
-                }
-            }
-        });
-
-        panel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
         frame.add(table, BorderLayout.EAST);
-        //TODO: naucit se to a dodelat ukladai
+        //TODO: naucit se to a dodelat ukladai + pridani odendani
+    }
+
+    // nová metoda – smaže model a znovu ho naplní z gc.getScores()
+    private void refreshList() {
+        model.clear();
+        for (Score s : gc.getScores()) {
+            model.addElement(s.getName() + " – " + s.getAttempts() + " tahů");
+        }
     }
 
 }

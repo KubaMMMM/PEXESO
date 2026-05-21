@@ -1,11 +1,9 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import javax.imageio.ImageIO;
 
 public class GameBoard {
     private ArrayList<ArrayList<Card>> board;
@@ -17,6 +15,7 @@ public class GameBoard {
         createBoard();
     }
 
+    // ===================== NAČTENÍ OBRÁZKU =====================
     public Image getImage(String filePath) {
         try {
             File file = new File(filePath);
@@ -30,24 +29,26 @@ public class GameBoard {
     }
 
 
-
+    // ===================== SESTAVENÍ HERNÍ DESKY =====================
     public void createBoard(){
 
         int count = diff.getCardCount();
         ArrayList<Card> cards = new ArrayList<>();
 
+        // pro každý obrázek vytvoř 2 karty (pár)
         for(int i = 0; i < count/2; i++){
 
             for(int e = 0; e < 2; e++){
 
-                cards.add(new Card(i, getImage("src\\images\\image (" + (i + 1) + ").png"
+                cards.add(new Card(i, getImage("resources\\images\\image (" + (i + 1) + ").png"
                 )));
             }
 
         }
 
-        Collections.shuffle(cards);
+        Collections.shuffle(cards);     // zamíchání karet před rozložením
 
+        // rozložení karet do 2D mřížky (řádky × sloupce)
         for(int i = 0; i < diff.getRows(); i++){
 
             ArrayList<Card> row = new ArrayList<>();
@@ -78,6 +79,7 @@ public class GameBoard {
         this.diff = diff;
     }
 
+    // ===================== OZNAČENÍ KARTY JAKO SPÁROVANÉ =====================
     public void setCardNull(Card card) {
         for (ArrayList<Card> rows : board) {
             for (Card cardd : rows) {

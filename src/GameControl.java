@@ -17,9 +17,9 @@ public class GameControl {
         this.attempts = 0;
         this.end = false;
         this.board = board;
-        loadPlayerCounter();
-        playerCounter++;
-        savePlayerCounter();
+        loadPlayerCounter();    // načte aktuální počet hráčů ze souboru
+        playerCounter++;        // přičte aktuálního hráče
+        savePlayerCounter();    // uloží zpět
         scores = new ArrayList<>();
 
 
@@ -112,6 +112,7 @@ public class GameControl {
 
 
 
+    // ===================== POROVNÁNÍ KARET =====================
     public boolean match(Card card, Card card2){
 
         if(card.getID() == card2.getID()){
@@ -126,6 +127,8 @@ public class GameControl {
         return card;
     }
 
+    // ===================== KONTROLA KONCE HRY =====================
+    // vrátí true pokud jsou všechny karty spárovány
     public Boolean checkEnd(){
         for (ArrayList<Card> rows : board.getBoard()) {
             for (Card cardd : rows) {
@@ -147,6 +150,8 @@ public class GameControl {
         return sb.toString();
     }
 
+    // ===================== POKUS O SPÁROVÁNÍ =====================
+    // zavolá se po otočení druhé karty – vrátí true při shodě
     public boolean attemptMatch(Card card, Card card2){
 
         attempts++; // OPRAVA: počítáme jednou (bylo dvakrát)
@@ -166,6 +171,7 @@ public class GameControl {
             return true;
         }
 
+        // neshoda – karty se vrátí lícem dolů
         card.setFlipped(false);
         card2.setFlipped(false);
         return false;

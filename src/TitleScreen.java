@@ -1,6 +1,6 @@
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
-import java.awt.*;
 
 public class TitleScreen extends JFrame {
     private JFrame frame;
@@ -28,7 +28,7 @@ public class TitleScreen extends JFrame {
 
         // ===================== IKONA OKNA =====================
         try {
-            ImageIcon icon = new ImageIcon(getClass().getResource("/resources/icon.png"));
+            ImageIcon icon = new ImageIcon(getClass().getResource("/icon.png"));
             frame.setIconImage(icon.getImage());
         } catch (Exception e) {
             System.out.println("icon obrazek nenalezen");

@@ -24,6 +24,7 @@ public class Score implements Serializable, Comparable<Score>{
         return name + " - " + attempts;
     }
 
+    // řadí vzestupně – méně tahů = lepší výsledek
     @Override
     public int compareTo(Score o) {
        return attempts  - o.attempts;

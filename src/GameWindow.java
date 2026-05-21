@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class GameWindow extends JFrame {
 
@@ -35,7 +34,7 @@ public class GameWindow extends JFrame {
 
         // ===================== IKONA OKNA =====================
         try {
-            ImageIcon icon = new ImageIcon(getClass().getResource("/resources/icon.png"));
+            ImageIcon icon = new ImageIcon(getClass().getResource("/icon.png"));
             frame.setIconImage(icon.getImage());
         } catch (Exception e) {
             System.out.println("icon obrazek nenalezen");
