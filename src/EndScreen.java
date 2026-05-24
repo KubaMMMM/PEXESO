@@ -146,7 +146,6 @@ public class EndScreen extends JFrame {
         });
 
         frame.add(table, BorderLayout.CENTER);
-        //TODO: naucit se to a dodelat ukladai + pridani odendani
     }
 
     // nová metoda – smaže model a znovu ho naplní z gc.getScores()

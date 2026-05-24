@@ -6,7 +6,7 @@ public class Game {
 
     public Game() {
 
-        this.gb = new GameBoard(Difficulty.EASY);
+        this.gb = new GameBoard(Difficulty.EASY); // výchozí obtížnost, může být změněna v TitleScreen
         this.gc = new GameControl(gb);
         this.titleScreen = new TitleScreen(gc);
     }
