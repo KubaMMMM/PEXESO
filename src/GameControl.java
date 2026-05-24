@@ -1,39 +1,34 @@
-import java.awt.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
 public class GameControl {
 
     private static int playerCounter;
-    private static final String SAVE_FILE = "resources/players.dat";
     private GameBoard board;
     private boolean end;
     private int attempts;
     private ArrayList<Score> scores;
 
     public GameControl(GameBoard board) {
+        scores = new ArrayList<>();  // inicializuj nejdřív, aby bylo kam načítat
         this.attempts = 0;
         this.end = false;
         this.board = board;
         loadPlayerCounter();    // načte aktuální počet hráčů ze souboru
+        loadScores();
         playerCounter++;        // přičte aktuálního hráče
         savePlayerCounter();    // uloží zpět
-        scores = new ArrayList<>();
-
-
 
     }
 
-
     // ===================== NAČTENÍ Z SOUBORU =====================
     public static void loadPlayerCounter() {
-        File file = new File(SAVE_FILE);
+        File file = new File("resources/players.dat");
 
         if (!file.exists()) {
-            // soubor neexistuje – vytvoř ho s hodnotou 1
-            playerCounter = 0;
+            playerCounter = -1; // nastavíme na -1, protože v konstruktoru se ještě přičítá 1
             savePlayerCounter();
             return;
         }
@@ -47,18 +42,29 @@ public class GameControl {
         }
     }
 
-
     //==========================NACTENI SKORE====================
     public void loadScores() {
 
-        File file = new File("resources/skore.dat");
+        File file = null;
+
+        switch (board.getDiff()) {
+            case HARD:
+                file = new File("resources/scoresHARD.dat");
+                break;
+            case MEDIUM:
+                file = new File("resources/scoresMEDIUM.dat");
+                break;
+            case EASY:
+                file = new File("resources/scoresEASY.dat");
+                break;
+        }
 
         if (!file.exists()) {
             return;
         }
 
-        try (ObjectInputStream ois =
-                     new ObjectInputStream(new FileInputStream(file))) {
+        try (ObjectInputStream ois
+                = new ObjectInputStream(new FileInputStream(file))) {
 
             scores = (ArrayList<Score>) ois.readObject();
 
@@ -70,9 +76,25 @@ public class GameControl {
     //==========================ULOZENI SKORE====================
     public void saveScores() {
 
-        try (ObjectOutputStream oos =
-                     new ObjectOutputStream(
-                             new FileOutputStream("resources/skore.dat"))) {
+        File file = null;
+
+        switch (board.getDiff()) {
+            case HARD:
+                file = new File("resources/scoresHARD.dat");
+                break;
+            case MEDIUM:
+                file = new File("resources/scoresMEDIUM.dat");
+                break;
+            case EASY:
+                file = new File("resources/scoresEASY.dat");
+                break;
+        }
+
+        file.getParentFile().mkdirs(); // vytvoří složku resources, pokud neexistuje
+
+        try (ObjectOutputStream oos
+                = new ObjectOutputStream(
+                        new FileOutputStream(file))) {
 
             oos.writeObject(scores);
 
@@ -90,10 +112,9 @@ public class GameControl {
         saveScores();
     }
 
-
     // ===================== ULOŽENÍ DO SOUBORU =====================
     public static void savePlayerCounter() {
-        File file = new File(SAVE_FILE);
+        File file = new File("resources/players.dat");
 
         // vytvoř složku resources pokud neexistuje
         file.getParentFile().mkdirs();
@@ -110,18 +131,16 @@ public class GameControl {
         return playerCounter;
     }
 
-
-
     // ===================== POROVNÁNÍ KARET =====================
-    public boolean match(Card card, Card card2){
+    public boolean match(Card card, Card card2) {
 
-        if(card.getID() == card2.getID()){
+        if (card.getID() == card2.getID()) {
             return true;
         }
         return false;
     }
 
-    public Card flipCard(int colum, int row){
+    public Card flipCard(int colum, int row) {
         Card card = board.getBoard().get(row).get(colum);
         card.setFlipped(true);
         return card;
@@ -129,7 +148,7 @@ public class GameControl {
 
     // ===================== KONTROLA KONCE HRY =====================
     // vrátí true pokud jsou všechny karty spárovány
-    public Boolean checkEnd(){
+    public Boolean checkEnd() {
         for (ArrayList<Card> rows : board.getBoard()) {
             for (Card cardd : rows) {
                 if (!cardd.isMatched()) {
@@ -140,7 +159,7 @@ public class GameControl {
         return true;
     }
 
-    public String getResoult(){
+    public String getResoult() {
 
         StringBuilder sb = new StringBuilder();
 
@@ -152,18 +171,18 @@ public class GameControl {
 
     // ===================== POKUS O SPÁROVÁNÍ =====================
     // zavolá se po otočení druhé karty – vrátí true při shodě
-    public boolean attemptMatch(Card card, Card card2){
+    public boolean attemptMatch(Card card, Card card2) {
 
         attempts++; // OPRAVA: počítáme jednou (bylo dvakrát)
 
-        if (match(card, card2)){
+        if (match(card, card2)) {
             card.setMatched(true);
             card2.setMatched(true);
 
             board.setCardNull(card);
             board.setCardNull(card2);
 
-            if(checkEnd()){
+            if (checkEnd()) {
                 end = true;
                 System.out.println(getResoult());
             }
@@ -177,7 +196,6 @@ public class GameControl {
         return false;
     }
 
-
     public static void setPlayerCounter(int playerCounter) {
         GameControl.playerCounter = playerCounter;
     }
@@ -188,6 +206,8 @@ public class GameControl {
 
     public void setBoard(GameBoard board) {
         this.board = board;
+        scores = new ArrayList<>();
+        loadScores();
     }
 
     public boolean isEnd() {

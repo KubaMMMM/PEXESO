@@ -22,6 +22,7 @@ public class EndScreen extends JFrame {
         scrollPane = new JScrollPane(list);
         textField = new JTextField();
         init();
+        refreshList();
     }
 
     private void init() {
@@ -60,7 +61,7 @@ public class EndScreen extends JFrame {
         attemptsText.setBorder(BorderFactory.createEmptyBorder(40, 20, 0, 0)); // mezera: 10px nahoře, 5px dole
         attempts.add(attemptsText);
 
-        JLabel attemptsNumber = new JLabel("    " + gc.getAttempts(), SwingConstants.CENTER);
+        JLabel attemptsNumber = new JLabel(" " + gc.getAttempts(), SwingConstants.CENTER);
         attemptsNumber.setFont(new Font("Comic Sans", Font.BOLD, 70));
         attemptsNumber.setBorder(BorderFactory.createEmptyBorder(2, 10, 1, 0)); // mezera: 10px nahoře, 5px dole
         attempts.add(attemptsNumber);
@@ -113,6 +114,8 @@ public class EndScreen extends JFrame {
             if (playerName == null && !text.isEmpty() && !text.equals("Zadejte jméno")) {
                 playerName = text;
                 model.addElement(text);
+                gc.addScore(text);
+                refreshList();
                 textField.disable();
             }
 
@@ -132,6 +135,8 @@ public class EndScreen extends JFrame {
                     if (playerName == null && !text.isEmpty() && !text.equals("Zadejte jméno")) {
                         playerName = text;
                         model.addElement(text);
+                        gc.addScore(text);
+                        refreshList();
                         textField.disable();
                     }
 
@@ -140,7 +145,7 @@ public class EndScreen extends JFrame {
             }
         });
 
-        frame.add(table, BorderLayout.EAST);
+        frame.add(table, BorderLayout.CENTER);
         //TODO: naucit se to a dodelat ukladai + pridani odendani
     }
 

@@ -11,8 +11,6 @@ public class TitleScreen extends JFrame {
         this.frame = new JFrame("Pexeso");
         init();
 
-        frame.setVisible(false);
-        EndScreen end = new EndScreen(gc);
     }
 
 
